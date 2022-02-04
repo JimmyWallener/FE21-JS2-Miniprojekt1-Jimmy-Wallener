@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Using @import instead of links, due to integrity hash problem with CORS. https://github.com/google/fonts/issues/473 -->
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700;900&display=swap");
+    </style>
+    <link rel="stylesheet" href="./css/style.css" />
+
+    <title>RPS Game - Game Page</title>
+  </head>
+  <body>
+    <main class="main-game">
+      <div class="container">
+        <div class="rock player game-area"></div>
+        <div class="paper player game-area"></div>
+        <div class="scissor player game-area"></div>
+        <div class="player-one game-area"></div>
+        <div class="round game-area"></div>
+        <div class="computer game-area"></div>
+        <div class="versus game-area"></div>
+        <div class="computer-choice game-area"></div>
+        <div class="reset-game">
+          <button id="reset-btn" type="button">Reset Game</button>
+        </div>
+      </div>
+    </main>
+  </body>
+  <script src="./js/game.js"></script>
+</html>

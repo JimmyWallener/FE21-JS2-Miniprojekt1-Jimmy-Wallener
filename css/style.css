@@ -1,0 +1,116 @@
+:root {
+  font-family: "Roboto", sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Index Page */
+
+.start-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #0c0c0c;
+  width: 100vw;
+  height: 100vh;
+}
+.rps-img {
+  width: 50vw;
+  height: 50vh;
+  cursor: pointer;
+}
+
+/* Game Page*/
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 14px 7px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    ". . . . . . . ."
+    ". Player-One Player-One . Round Round Computer Computer"
+    ". Rock Paper Scissor Versus Versus Computer-Choice Computer-Choice"
+    ". Rock Paper Scissor Versus Versus Computer-Choice Computer-Choice"
+    ". Rock Paper Scissor Versus Versus Computer-Choice Computer-Choice"
+    ". . . . Reset Reset . .";
+  background-color: #0c0b0b;
+  width: 100vw;
+  height: 100vh;
+}
+
+.rock {
+  grid-area: Rock;
+}
+
+.paper {
+  grid-area: Paper;
+}
+
+.scissor {
+  grid-area: Scissor;
+}
+
+.player-one {
+  grid-area: Player-One;
+}
+
+.round {
+  grid-area: Round;
+}
+
+.computer {
+  grid-area: Computer;
+}
+
+.versus {
+  grid-area: Versus;
+}
+
+.computer-choice {
+  grid-area: Computer-Choice;
+}
+
+.game-area {
+  display: flex;
+  justify-content: center;
+}
+.reset-game {
+  grid-area: Reset;
+}
+
+.card {
+  width: 10vw;
+  height: 30vh;
+  border-radius: 2em;
+}
+#reset-btn {
+  width: 10rem;
+  padding: 1rem;
+  border-radius: 0.5em;
+  font-size: 2em;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 5vh;
+  cursor: pointer;
+  background: #0c0b0b;
+  color: whitesmoke;
+}
+#reset-btn:hover {
+  background: #e9e7e7;
+  color: #0c0b0b;
+}
+h1 {
+  display: flex;
+  justify-content: center;
+  font-size: clamp(2em, 1.5vw, 3em);
+  text-transform: uppercase;
+  color: whitesmoke;
+  letter-spacing: 0.3em;
+}
