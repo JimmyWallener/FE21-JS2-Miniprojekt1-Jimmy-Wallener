@@ -1,5 +1,5 @@
 :root {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 body {
@@ -30,19 +30,34 @@ body {
 .container {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: repeat(5, 1fr);
+  grid-template-rows: repeat(6, 1fr);
   gap: 14px 7px;
   grid-auto-flow: row;
   grid-template-areas:
-    ". . . . . . . ."
-    ". Player-One Player-One . Round Round Computer Computer"
-    ". Rock Paper Scissor Versus Versus Computer-Choice Computer-Choice"
-    ". Rock Paper Scissor Versus Versus Computer-Choice Computer-Choice"
-    ". Rock Paper Scissor Versus Versus Computer-Choice Computer-Choice"
-    ". . . . Reset Reset . .";
+    'Rules Rules . . . . Highscore Highscore'
+    '. Player-One Player-One . . . . .'
+    '. Rock Paper Scissor Versus Versus Computer-Choice Computer-Choice'
+    '. Rock Paper Scissor Versus Versus Computer-Choice Computer-Choice'
+    '. Rock Paper Scissor Versus Versus Computer-Choice Computer-Choice'
+    '. . . . . . . .';
   background-color: #0c0b0b;
   width: 100vw;
   height: 100vh;
+}
+
+.rules {
+  grid-area: Rules;
+  color: whitesmoke;
+  border: 0.1em dotted white;
+  border-radius: 1em;
+  margin-left: 1rem;
+}
+.rules p {
+  padding: 0.5rem;
+}
+
+.highscore {
+  grid-area: Highscore;
 }
 
 .rock {
@@ -81,31 +96,27 @@ body {
   display: flex;
   justify-content: center;
 }
-.reset-game {
-  grid-area: Reset;
-}
 
 .card {
   width: 10vw;
   height: 30vh;
   border-radius: 2em;
 }
-#reset-btn {
-  width: 10rem;
-  padding: 1rem;
-  border-radius: 0.5em;
-  font-size: 2em;
-  text-transform: uppercase;
-  font-weight: bold;
-  margin-bottom: 5vh;
-  cursor: pointer;
-  background: #0c0b0b;
+
+.scoreheading {
   color: whitesmoke;
+  text-align: center;
 }
-#reset-btn:hover {
-  background: #e9e7e7;
-  color: #0c0b0b;
+.scores,
+.scorenames {
+  display: flex;
+  flex-direction: column;
+  color: whitesmoke;
+  font-weight: 600;
+  font-size: 1em;
+  line-height: 2em;
 }
+
 h1 {
   display: flex;
   justify-content: center;

@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Using @import instead of links, due to integrity hash problem with CORS. https://github.com/google/fonts/issues/473 -->
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700;900&display=swap");
+      @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700;900&display=swap');
     </style>
+    <script type="module" src="./js/game.js" defer></script>
     <link rel="stylesheet" href="./css/style.css" />
 
     <title>RPS Game - Game Page</title>
@@ -15,19 +16,27 @@
   <body>
     <main class="main-game">
       <div class="container">
+        <div class="rules">
+          <p>
+            Keep playing and increase your gamescore.<br />
+            If computer wins, then gamescore is reset to 0.<br />
+            Compete against others and get highest score in order to be placed
+            on the board
+          </p>
+        </div>
+        <div class="highscore">
+          <h3 class="scoreheading">TOP 5 HIGHSCORE</h3>
+          <ol class="scores"></ol>
+        </div>
         <div class="rock player game-area"></div>
         <div class="paper player game-area"></div>
         <div class="scissor player game-area"></div>
         <div class="player-one game-area"></div>
-        <div class="round game-area"></div>
-        <div class="computer game-area"></div>
+
         <div class="versus game-area"></div>
         <div class="computer-choice game-area"></div>
-        <div class="reset-game">
-          <button id="reset-btn" type="button">Reset Game</button>
-        </div>
+        <div class="reset-game"></div>
       </div>
     </main>
   </body>
-  <script src="./js/game.js"></script>
 </html>
