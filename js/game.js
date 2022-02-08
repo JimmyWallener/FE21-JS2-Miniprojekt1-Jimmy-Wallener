@@ -13,14 +13,13 @@
 
   // Instance class for creating database urls depending on requested data
   class Database {
-    constructor(prefix, endpoint) {
+    constructor(endpoint) {
       this.url =
-        'https://exercise-js2-default-rtdb.europe-west1.firebasedatabase.app/';
-      this.prefix = prefix;
+        'https://exercise-js2-default-rtdb.europe-west1.firebasedatabase.app';
       this.endpoint = endpoint;
     }
     getUri() {
-      return `${this.url}/${this.prefix}/${this.endpoint}.json`;
+      return `${this.url}/${this.endpoint}/.json`;
     }
   }
 
@@ -106,35 +105,53 @@
     return winner;
   };
 
-  // Function gets name & score, compare with scores in database. If score is higher, update database and break loop, if equal, break loop
-  const compareHighscore = async (playerScore, playerName) => {
+  // GET method for injecting player score and database object to sort/compare function
+  const compareHighscore = async (userScore, playerName) => {
     const connect = new Database('highscore', '');
 
     await fetch(connect.getUri())
       .then((res) => res.json())
       .then((results) => {
-        for (const result in results) {
-          const { score } = results[result];
-          if (playerScore > score) {
-            updateHighscore(playerScore, playerName, result);
-            break;
-          } else if (playerScore === score) {
-            break;
-          }
+        sortHighscore(userScore, playerName, results);
+      })
+      .catch((error) => console.log('Compare Highscore:', error));
+  };
+
+  const sortHighscore = (userScore, userName, object) => {
+    let newObject = {};
+    for (const key in object) {
+      const { score } = object[key];
+      if (userScore > score) {
+        // creating a new element to existing object, if userscore is higher
+        let addUserScore = Object.assign(object, {
+          5: {
+            name: userName,
+            score: userScore,
+          },
+        });
+
+        let sorted = Object.entries(addUserScore).sort(
+          (a, b) => b[1].score - a[1].score
+        );
+
+        for (let i = 0; i < sorted.length - 1; i++) {
+          newObject[i] = { name: sorted[i][1].name, score: sorted[i][1].score };
         }
-      });
+      } else if (userScore === score) {
+        break;
+      }
+    }
+
+    updateHighscore(newObject);
   };
 
   // Function sends PATCH to database with new score and name, updates scoreboard afterwards.
-  const updateHighscore = async (playerScore, playerName, index) => {
-    const connect = new Database('highscore', index);
+  const updateHighscore = async (object) => {
+    const upDatedatabase = new Database('highscore');
 
-    await fetch(connect.getUri(), {
+    await fetch(upDatedatabase.getUri(), {
       method: 'PATCH',
-      body: JSON.stringify({
-        name: playerName,
-        score: playerScore,
-      }),
+      body: JSON.stringify(object),
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
       },
@@ -142,13 +159,15 @@
       .then((res) => res.json())
       .then((data) => {
         getHighscoreBoard();
-      });
+      })
+      .catch((error) => console.log('Update Highscore:', error));
   };
 
   // Removes any existing children from DOM-Element, then populates it with new data-lists
   const getHighscoreBoard = async () => {
     const connect = new Database('highscore', '');
     const ol = document.querySelector('.scores');
+
     while (ol.firstChild) {
       ol.removeChild(ol.lastChild);
     }
@@ -156,13 +175,14 @@
     await fetch(connect.getUri())
       .then((res) => res.json())
       .then((users) => {
-        for (const user in users) {
+        for (const index in users) {
           const li = document.createElement('li');
-          const { name, score } = users[user];
+          const { name, score } = users[index];
           li.innerText = `${name} with ${score} rounds`;
           ol.appendChild(li);
         }
-      });
+      })
+      .catch((error) => console.log('Get Highscore:', error));
   };
   getHighscoreBoard();
 })();
