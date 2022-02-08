@@ -121,6 +121,7 @@
     let newObject = {};
     for (const key in object) {
       const { score } = object[key];
+      // Only if user has a higher score, will sorting and adding to highscore accure
       if (userScore > score) {
         // creating a new element to existing object, if userscore is higher
         let addUserScore = Object.assign(object, {
@@ -129,14 +130,15 @@
             score: userScore,
           },
         });
-
+        // sorting the object based on score
         let sorted = Object.entries(addUserScore).sort(
           (a, b) => b[1].score - a[1].score
         );
-
+        // creating a new object body for PATCH method
         for (let i = 0; i < sorted.length - 1; i++) {
           newObject[i] = { name: sorted[i][1].name, score: sorted[i][1].score };
         }
+        // if scores are equal, stop checking and break loop
       } else if (userScore === score) {
         break;
       }
