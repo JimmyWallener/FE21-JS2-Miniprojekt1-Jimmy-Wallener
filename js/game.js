@@ -2,10 +2,6 @@
   const getURL = (endpoint) =>
     `https://exercise-js2-default-rtdb.europe-west1.firebasedatabase.app/${endpoint}/.json`;
 
-  const generateRandomNumber = (cards) => {
-    return Math.floor(Math.random() * cards.length);
-  };
-
   const setScoreBoard = (score) => {
     const playerScore = document.querySelector('.player-one');
     const h2 = document.createElement('h1');
@@ -39,7 +35,7 @@
 
   const computerChoice = () => {
     const cards = ['rock', 'paper', 'scissors'];
-    let randomNumber = generateRandomNumber(cards);
+    let randomNumber = Math.floor(Math.random() * 3);
     const cpuChoice = document.querySelector('.computer-choice');
     let img = document.createElement('img');
 

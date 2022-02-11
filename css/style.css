@@ -51,6 +51,7 @@ body {
   border: 0.1em dotted white;
   border-radius: 1em;
   margin-left: 1rem;
+  height: 20vh;
 }
 .rules p {
   padding: 0.5rem;
@@ -58,6 +59,7 @@ body {
 
 .highscore {
   grid-area: Highscore;
+  height: 20vh;
 }
 
 .rock {
