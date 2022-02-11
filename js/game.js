@@ -191,4 +191,5 @@
       .catch((error) => console.log('Get Highscore:', error));
   };
   getHighscoreBoard();
+  setScoreBoard(0);
 })();
