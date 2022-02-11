@@ -14,24 +14,32 @@
     h2.innerText = `${name}:  ${score}`;
   };
 
-  const clickCard = (card, index) => {
+  const clickCard = (card, index, getScore) => {
     card.addEventListener('click', () => {
-      checkWinner(index, computerChoice());
+      checkWinner(index, computerChoice(), getScore);
     });
   };
 
-  (function () {
-    const cards = ['rock', 'paper', 'scissors'];
-    const playerCards = document.querySelectorAll('.player');
-    playerCards.forEach((card, index) => {
-      const img = document.createElement('img');
-      card.appendChild(img);
-      img.setAttribute('src', `./img/${cards[index]}.png`);
-      img.setAttribute('alt', `${cards[index]}`);
-      img.classList.add('card');
-      clickCard(card, index);
-    });
-  })();
+  // Updating, Resetting & Getting score with Closure
+
+  const setPlayerScore = () => {
+    let newScore = 0;
+
+    function increment() {
+      newScore++;
+    }
+    function reset() {
+      newScore = 0;
+    }
+    function getResult() {
+      return newScore;
+    }
+    return {
+      increment: increment,
+      getResult: getResult,
+      reset: reset,
+    };
+  };
 
   const computerChoice = () => {
     const cards = ['rock', 'paper', 'scissors'];
@@ -78,46 +86,24 @@
     return winner;
   };
 
-  const checkWinner = (player, computer) => {
+  const checkWinner = (player, computer, checkScore) => {
     const name = localStorage.name;
-    let checkScore = score();
+
     if (gameLogic(player, computer)) {
-      checkScore.increaseScore();
-      setScoreBoard(checkScore.result());
+      checkScore.increment();
+      setScoreBoard(checkScore.getResult());
     } else if (gameLogic(player, computer) === null) {
+      getHighscoreBoard();
     } else {
-      compareHighscore(player, name);
-      checkScore.resetScore();
-      setScoreBoard(checkScore.result());
+      compareHighscore(checkScore.getResult(), name);
+      checkScore.reset();
+      setScoreBoard(checkScore.getResult());
     }
   };
-
-  // Updating, Resetting & Getting score with Closure
-
-  function score() {
-    let score = 0;
-
-    function keepScore(val) {
-      score += val;
-    }
-
-    return {
-      increaseScore: function () {
-        keepScore(1);
-      },
-      resetScore: function () {
-        score = 0;
-      },
-      result: function () {
-        return score;
-      },
-    };
-  }
 
   // GET method for injecting player score and database object to sort/compare function
   const compareHighscore = async (userScore, playerName) => {
     const connect = getURL('highscore');
-
     await fetch(connect)
       .then((res) => res.json())
       .then((results) => {
@@ -195,6 +181,21 @@
       })
       .catch((error) => console.log('Get Highscore:', error));
   };
-  getHighscoreBoard();
-  setScoreBoard(0);
+
+  (function () {
+    const cards = ['rock', 'paper', 'scissors'];
+    const playerCards = document.querySelectorAll('.player');
+    const getScore = setPlayerScore();
+    playerCards.forEach((card, index) => {
+      const img = document.createElement('img');
+      card.appendChild(img);
+      img.setAttribute('src', `./img/${cards[index]}.png`);
+      img.setAttribute('alt', `${cards[index]}`);
+      img.classList.add('card');
+
+      clickCard(card, index, getScore);
+    });
+    getHighscoreBoard();
+    setScoreBoard(0);
+  })();
 })();
