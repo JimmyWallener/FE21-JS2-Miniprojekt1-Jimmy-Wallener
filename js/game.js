@@ -1,23 +1,19 @@
 (function () {
-  const playerCards = document.querySelectorAll('.player');
-  const playerScore = document.querySelector('.player-one');
-  const cpuChoice = document.querySelector('.computer-choice');
-  const versus = document.querySelector('.versus');
-  const cards = ['rock', 'paper', 'scissors'];
-  const h4 = document.createElement('h1');
-  const h2 = document.createElement('h1');
-  playerScore.appendChild(h2);
-  versus.appendChild(h4);
-  h4.setAttribute('class', 'result-text');
-
   const getURL = (endpoint) =>
     `https://exercise-js2-default-rtdb.europe-west1.firebasedatabase.app/${endpoint}/.json`;
 
-  const generateRandomNumber = () => {
+  const generateRandomNumber = (cards) => {
     return Math.floor(Math.random() * cards.length);
   };
 
   const setScoreBoard = (score) => {
+    const playerScore = document.querySelector('.player-one');
+    const h2 = document.createElement('h1');
+    while (playerScore.firstChild) {
+      playerScore.removeChild(playerScore.lastChild);
+    }
+    playerScore.appendChild(h2);
+
     const name = localStorage.name;
     h2.innerText = `${name}:  ${score}`;
   };
@@ -28,17 +24,23 @@
     });
   };
 
-  playerCards.forEach((card, index) => {
-    const img = document.createElement('img');
-    card.appendChild(img);
-    img.setAttribute('src', `./img/${cards[index]}.png`);
-    img.setAttribute('alt', `${cards[index]}`);
-    img.classList.add('card');
-    clickCard(card, index);
-  });
+  (function () {
+    const cards = ['rock', 'paper', 'scissors'];
+    const playerCards = document.querySelectorAll('.player');
+    playerCards.forEach((card, index) => {
+      const img = document.createElement('img');
+      card.appendChild(img);
+      img.setAttribute('src', `./img/${cards[index]}.png`);
+      img.setAttribute('alt', `${cards[index]}`);
+      img.classList.add('card');
+      clickCard(card, index);
+    });
+  })();
 
   const computerChoice = () => {
-    let randomNumber = generateRandomNumber();
+    const cards = ['rock', 'paper', 'scissors'];
+    let randomNumber = generateRandomNumber(cards);
+    const cpuChoice = document.querySelector('.computer-choice');
     let img = document.createElement('img');
 
     while (cpuChoice.firstChild) {
@@ -53,6 +55,13 @@
 
   // Game logic for checking win/loss/tie
   const gameLogic = (player, computer) => {
+    const versus = document.querySelector('.versus');
+    const h4 = document.createElement('h1');
+    while (versus.firstChild) {
+      versus.removeChild(versus.lastChild);
+    }
+    versus.appendChild(h4);
+    h4.setAttribute('class', 'result-text');
     let winner = '';
     if (player === computer) {
       h4.innerText = 'Tie';
