@@ -3,82 +3,50 @@
   const playerScore = document.querySelector('.player-one');
   const cpuChoice = document.querySelector('.computer-choice');
   const versus = document.querySelector('.versus');
-
+  const cards = ['rock', 'paper', 'scissors'];
+  const h4 = document.createElement('h1');
   const h2 = document.createElement('h1');
   playerScore.appendChild(h2);
-
-  const h4 = document.createElement('h1');
   versus.appendChild(h4);
   h4.setAttribute('class', 'result-text');
 
-  // Instance class for creating database urls depending on requested data
-  class Database {
-    constructor(endpoint) {
-      this.url =
-        'https://exercise-js2-default-rtdb.europe-west1.firebasedatabase.app';
-      this.endpoint = endpoint;
-    }
-    getUri() {
-      return `${this.url}/${this.endpoint}/.json`;
-    }
-  }
+  const getURL = (endpoint) =>
+    `https://exercise-js2-default-rtdb.europe-west1.firebasedatabase.app/${endpoint}/.json`;
 
-  const game = {
-    _name: localStorage.name,
-    _playerScore: 0,
-    cards: ['rock', 'paper', 'scissors'],
-    // If player wins, add to score, if tie do nothing. If CPU wins, check highscore and update if needed.
-    winner: function (player, computer) {
-      if (gameLogic(player, computer)) {
-        this._playerScore++;
-        this.scoreBoard();
-      } else if (gameLogic(player, computer) === null) {
-        this.scoreBoard();
-      } else {
-        compareHighscore(this._playerScore, this._name);
-        this._playerScore = 0;
-        this.scoreBoard();
-      }
-    },
-    scoreBoard: function () {
-      h2.innerText = `${this._name}:  ${this._playerScore}`;
-    },
-    randomNumber: function () {
-      return Math.floor(Math.random() * this.cards.length);
-    },
+  const generateRandomNumber = () => {
+    return Math.floor(Math.random() * cards.length);
+  };
+
+  const setScoreBoard = (score) => {
+    const name = localStorage.name;
+    h2.innerText = `${name}:  ${score}`;
   };
 
   const clickCard = (card, index) => {
     card.addEventListener('click', () => {
-      game.winner(index, computerChoice());
+      checkWinner(index, computerChoice());
     });
   };
 
-  /*
- Lets append <img> to each <div>, with clicklisteners on each element
- for picking up users choice, getting index for reference to game logic.
-*/
   playerCards.forEach((card, index) => {
     const img = document.createElement('img');
     card.appendChild(img);
-    img.setAttribute('src', `./img/${game.cards[index]}.png`);
-    img.setAttribute('alt', `${game.cards[index]}`);
+    img.setAttribute('src', `./img/${cards[index]}.png`);
+    img.setAttribute('alt', `${cards[index]}`);
     img.classList.add('card');
-    game.scoreBoard();
     clickCard(card, index);
   });
 
-  // Create random number and use that to create <img> based on cpu choice
   const computerChoice = () => {
-    let randomNumber = game.randomNumber();
+    let randomNumber = generateRandomNumber();
     let img = document.createElement('img');
 
     while (cpuChoice.firstChild) {
       cpuChoice.removeChild(cpuChoice.lastChild);
     }
     cpuChoice.appendChild(img);
-    img.setAttribute('src', `./img/${game.cards[randomNumber]}.png`);
-    img.setAttribute('alt', `${game.cards[randomNumber]}`);
+    img.setAttribute('src', `./img/${cards[randomNumber]}.png`);
+    img.setAttribute('alt', `${cards[randomNumber]}`);
     img.setAttribute('class', 'card cpu-card');
     return randomNumber;
   };
@@ -105,11 +73,47 @@
     return winner;
   };
 
+  const checkWinner = (player, computer) => {
+    const name = localStorage.name;
+    let checkScore = score();
+    if (gameLogic(player, computer)) {
+      checkScore.increaseScore();
+      setScoreBoard(checkScore.result());
+    } else if (gameLogic(player, computer) === null) {
+    } else {
+      compareHighscore(player, name);
+      checkScore.resetScore();
+      setScoreBoard(checkScore.result());
+    }
+  };
+
+  // Updating, Resetting & Getting score with Closure
+
+  function score() {
+    let score = 0;
+
+    function keepScore(val) {
+      score += val;
+    }
+
+    return {
+      increaseScore: function () {
+        keepScore(1);
+      },
+      resetScore: function () {
+        score = 0;
+      },
+      result: function () {
+        return score;
+      },
+    };
+  }
+
   // GET method for injecting player score and database object to sort/compare function
   const compareHighscore = async (userScore, playerName) => {
-    const connect = new Database('highscore', '');
+    const connect = getURL('highscore');
 
-    await fetch(connect.getUri())
+    await fetch(connect)
       .then((res) => res.json())
       .then((results) => {
         sortHighscore(userScore, playerName, results);
@@ -149,9 +153,9 @@
 
   // Function sends PATCH to database with new score and name, updates scoreboard afterwards.
   const updateHighscore = async (object) => {
-    const upDatedatabase = new Database('highscore');
+    const upDatedatabase = getURL('highscore');
 
-    await fetch(upDatedatabase.getUri(), {
+    await fetch(upDatedatabase, {
       method: 'PATCH',
       body: JSON.stringify(object),
       headers: {
@@ -167,14 +171,14 @@
 
   // Removes any existing children from DOM-Element, then populates it with new data-lists
   const getHighscoreBoard = async () => {
-    const connect = new Database('highscore', '');
+    const connect = getURL('highscore');
     const ol = document.querySelector('.scores');
 
     while (ol.firstChild) {
       ol.removeChild(ol.lastChild);
     }
 
-    await fetch(connect.getUri())
+    await fetch(connect)
       .then((res) => res.json())
       .then((users) => {
         for (const index in users) {
